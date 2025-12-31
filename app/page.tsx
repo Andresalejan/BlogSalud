@@ -1,8 +1,6 @@
 import ArticleItemList from "@/components/ArticleListItem"
 import { getCategorisedArticles } from "@/lib/articles"
 
-export const revalidate = 0
-
 const HomePage = () => {
   // Obtiene artículos agrupados por categoría leyendo los Markdown del directorio /articles.
   const articles = getCategorisedArticles()
