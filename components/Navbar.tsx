@@ -133,6 +133,9 @@ const Navbar = () => {
           <Link href="/#articles" className="px-2 py-1 text-neutral-800 hover:text-rose-800 transition">
             Artículos
           </Link>
+          <Link href="/sobre-nosotros" className="px-2 py-1 text-neutral-800 hover:text-rose-800 transition">
+            Sobre nosotros
+          </Link>
 
           {isHome ? (
             <div className="relative w-full md:w-auto md:min-w-56">
