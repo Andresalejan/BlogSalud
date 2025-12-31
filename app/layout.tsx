@@ -20,7 +20,7 @@ const poppins = Poppins({
 const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
 const siteDescription =
   process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
-  "Artículos de salud femenina con información clara y cuidada."
+  "Artículos de salud."
 
 export const metadata: Metadata = {
   title: `${siteName} · BlogSalud`,

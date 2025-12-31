@@ -15,7 +15,7 @@ const Navbar = () => {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
   const siteDescription =
     process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
-    "Artículos de salud femenina con información clara y cuidada."
+    "Artículos de salud femenina."
 
   // Necesitamos saber en qué ruta estamos para mostrar la barra de búsqueda
   // únicamente en la home.
@@ -116,7 +116,7 @@ const Navbar = () => {
 
   return (
     <header className="w-full border-b border-rose-100 bg-rose-50/70 backdrop-blur supports-[backdrop-filter]:bg-rose-50/60">
-      <nav className="mx-auto w-11/12 md:w-1/2 py-4 flex items-center justify-between">
+      <nav className="mx-auto w-11/12 md:w-1/2 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <Link href="/" className="flex flex-col leading-none">
           <span className="font-cormorantGaramond text-2xl tracking-tight text-rose-900">
             {siteName}
@@ -126,35 +126,35 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <div className="flex items-center gap-6 font-poppins text-sm">
-          <Link href="/" className="text-neutral-800 hover:text-rose-800 transition">
+        <div className="flex w-full flex-wrap items-center gap-x-4 gap-y-3 font-poppins text-sm md:w-auto md:flex-nowrap md:justify-end">
+          <Link href="/" className="px-2 py-1 text-neutral-800 hover:text-rose-800 transition">
             Inicio
           </Link>
-          <Link href="/#articles" className="text-neutral-800 hover:text-rose-800 transition">
+          <Link href="/#articles" className="px-2 py-1 text-neutral-800 hover:text-rose-800 transition">
             Artículos
           </Link>
 
           {isHome ? (
-            <div className="relative">
+            <div className="relative w-full md:w-auto md:min-w-56">
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="Buscar por categoría o título"
                 // Placeholder dinámico para indicar estado.
                 placeholder={isLoadingIndex ? "Cargando…" : "Buscar…"}
-                className="w-44 md:w-56 rounded-full border border-rose-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-rose-200"
+                className="w-full min-w-0 rounded-full border border-rose-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-rose-200 md:w-56"
               />
 
               {indexError ? (
                 // Mensaje de error pequeño debajo del input.
-                <div className="absolute right-0 mt-2 w-72 rounded-xl border border-rose-100 bg-white px-3 py-2 text-xs text-neutral-700">
+                <div className="absolute left-0 right-0 mt-2 rounded-xl border border-rose-100 bg-white px-3 py-2 text-xs text-neutral-700 md:left-auto md:right-0 md:w-72">
                   {indexError}
                 </div>
               ) : null}
 
               {debouncedQuery ? (
                 // Dropdown de resultados: aparece solo si hay texto.
-                <div className="absolute right-0 mt-2 w-72 overflow-hidden rounded-xl border border-rose-100 bg-white">
+                <div className="absolute left-0 right-0 mt-2 overflow-hidden rounded-xl border border-rose-100 bg-white md:left-auto md:right-0 md:w-72">
                   {results.length > 0 ? (
                     <ul className="max-h-80 overflow-auto">
                       {results.map((item) => (
