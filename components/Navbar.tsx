@@ -1,10 +1,118 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useEffect, useMemo, useRef, useState } from "react"
+
+type ArticleIndexItem = {
+  // `id` coincide con el slug del artículo (nombre del .md sin extensión).
+  id: string
+  title: string
+  category: string
+}
 
 const Navbar = () => {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
   const siteDescription =
     process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
     "Artículos de salud femenina con información clara y cuidada."
+
+  // Necesitamos saber en qué ruta estamos para mostrar la barra de búsqueda
+  // únicamente en la home.
+  const pathname = usePathname()
+  const isHome = pathname === "/"
+
+  // Estado del input y su versión “debounced” (para no filtrar en cada tecla).
+  const [query, setQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
+
+  // Índice descargado desde /api/articles (solo title/category/id, sin contenido).
+  const [articleIndex, setArticleIndex] = useState<ArticleIndexItem[]>([])
+
+  // Flags para UX: placeholder “Cargando…” y error amigable.
+  const [isLoadingIndex, setIsLoadingIndex] = useState(false)
+  const [indexError, setIndexError] = useState<string | null>(null)
+
+  // Importante: en modo dev, React puede ejecutar efectos más de una vez
+  // (Strict Mode). Además, si el efecto depende de estados que cambian durante
+  // el fetch, es fácil caer en loops y abortos.
+  // Estas refs nos ayudan a garantizar: “solo 1 fetch” y “no refetch si ya cargó”.
+  const indexLoadedRef = useRef(false)
+  const indexInFlightRef = useRef(false)
+
+  useEffect(() => {
+    // Debounce simple: esperamos 150ms tras la última tecla para actualizar
+    // el valor que se usa para filtrar.
+    const handle = setTimeout(() => setDebouncedQuery(query.trim()), 150)
+    return () => clearTimeout(handle)
+  }, [query])
+
+  useEffect(() => {
+    // Solo cargamos el índice en la home.
+    if (!isHome) return
+    // Evita: re-fetch infinito y requests canceladas.
+    if (indexLoadedRef.current || indexInFlightRef.current) return
+
+    // AbortController por si el componente se desmonta antes de terminar.
+    const controller = new AbortController()
+    indexInFlightRef.current = true
+    setIsLoadingIndex(true)
+    setIndexError(null)
+
+    // Descargamos el índice una sola vez. Luego filtramos en el cliente.
+    fetch("/api/articles", { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Error ${res.status}`)
+        }
+        return (await res.json()) as ArticleIndexItem[]
+      })
+      .then((data) => {
+        setArticleIndex(Array.isArray(data) ? data : [])
+        // Marcamos como “cargado” para no volver a pedirlo.
+        indexLoadedRef.current = true
+      })
+      .catch((err: unknown) => {
+        // Si el request fue cancelado (navegación, desmontaje, etc.) no mostramos error.
+        if (err instanceof DOMException && err.name === "AbortError") {
+          indexInFlightRef.current = false
+          return
+        }
+        // Error real: mostramos un mensaje breve.
+        setIndexError("No se pudo cargar la búsqueda")
+        indexInFlightRef.current = false
+      })
+      .finally(() => {
+        // Siempre bajamos el flag de carga (éxito o error).
+        setIsLoadingIndex(false)
+        indexInFlightRef.current = false
+      })
+
+    // Cleanup: si el efecto se limpia (Strict Mode o desmontaje), cancelamos el request.
+    // Importante: en Strict Mode (dev) React ejecuta efecto+cleanup y luego re-ejecuta
+    // el efecto inmediatamente. Si no liberamos el flag aquí, el segundo efecto puede
+    // “creer” que hay un request en vuelo y no volver a pedir el índice.
+    return () => {
+      indexInFlightRef.current = false
+      controller.abort()
+    }
+  }, [isHome])
+
+  const results = useMemo(() => {
+    // Solo calculamos resultados si estamos en la home y hay query.
+    if (!isHome) return []
+    if (!debouncedQuery) return []
+
+    // Búsqueda simple “contains” por título y por categoría.
+    const q = debouncedQuery.toLowerCase()
+    return articleIndex
+      .filter((a) => {
+        const title = (a.title ?? "").toLowerCase()
+        const category = (a.category ?? "").toLowerCase()
+        return title.includes(q) || category.includes(q)
+      })
+      .slice(0, 8)
+  }, [articleIndex, debouncedQuery, isHome])
 
   return (
     <header className="w-full border-b border-rose-100 bg-rose-50/70 backdrop-blur supports-[backdrop-filter]:bg-rose-50/60">
@@ -19,18 +127,65 @@ const Navbar = () => {
         </Link>
 
         <div className="flex items-center gap-6 font-poppins text-sm">
-          <Link
-            href="/"
-            className="text-neutral-800 hover:text-rose-800 transition"
-          >
+          <Link href="/" className="text-neutral-800 hover:text-rose-800 transition">
             Inicio
           </Link>
-          <Link
-            href="/#articles"
-            className="text-neutral-800 hover:text-rose-800 transition"
-          >
+          <Link href="/#articles" className="text-neutral-800 hover:text-rose-800 transition">
             Artículos
           </Link>
+
+          {isHome ? (
+            <div className="relative">
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                aria-label="Buscar por categoría o título"
+                // Placeholder dinámico para indicar estado.
+                placeholder={isLoadingIndex ? "Cargando…" : "Buscar…"}
+                className="w-44 md:w-56 rounded-full border border-rose-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-rose-200"
+              />
+
+              {indexError ? (
+                // Mensaje de error pequeño debajo del input.
+                <div className="absolute right-0 mt-2 w-72 rounded-xl border border-rose-100 bg-white px-3 py-2 text-xs text-neutral-700">
+                  {indexError}
+                </div>
+              ) : null}
+
+              {debouncedQuery ? (
+                // Dropdown de resultados: aparece solo si hay texto.
+                <div className="absolute right-0 mt-2 w-72 overflow-hidden rounded-xl border border-rose-100 bg-white">
+                  {results.length > 0 ? (
+                    <ul className="max-h-80 overflow-auto">
+                      {results.map((item) => (
+                        <li key={item.id}>
+                          <Link
+                            href={`/${item.id}`}
+                            // UX: limpiamos el input al seleccionar un resultado.
+                            onClick={() => setQuery("")}
+                            className="block px-4 py-3 hover:bg-rose-50 transition"
+                          >
+                            <div className="text-sm text-neutral-900">
+                              {item.title}
+                            </div>
+                            {item.category ? (
+                              <div className="text-xs text-neutral-600">
+                                {item.category}
+                              </div>
+                            ) : null}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="px-4 py-3 text-xs text-neutral-700">
+                      Sin resultados
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </nav>
     </header>
