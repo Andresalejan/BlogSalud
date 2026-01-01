@@ -11,7 +11,11 @@ type ArticleIndexItem = {
   category: string
 }
 
-const Navbar = () => {
+type NavbarProps = {
+  contentEnv?: "dev" | "prod"
+}
+
+const Navbar = ({ contentEnv }: NavbarProps) => {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
   const siteDescription =
     process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
@@ -118,8 +122,13 @@ const Navbar = () => {
     <header className="w-full border-b border-rose-100 bg-rose-50/70 backdrop-blur supports-[backdrop-filter]:bg-rose-50/60">
       <nav className="mx-auto w-11/12 md:w-1/2 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <Link href="/" className="flex flex-col leading-none">
-          <span className="font-cormorantGaramond text-2xl tracking-tight text-rose-900">
-            {siteName}
+          <span className="flex items-center gap-2 font-cormorantGaramond text-2xl tracking-tight text-rose-900">
+            <span>{siteName}</span>
+            {contentEnv === "dev" ? (
+              <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-100 px-2 py-0.5 font-poppins text-[10px] font-semibold tracking-widest text-rose-900">
+                DEV
+              </span>
+            ) : null}
           </span>
           <span className="font-poppins text-xs tracking-wide text-rose-700/90">
             {siteDescription}
