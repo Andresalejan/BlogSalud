@@ -107,7 +107,9 @@ Requisitos:
 	- `ADMIN_USERNAME`
 	- `ADMIN_PASSWORD`
 	- `ADMIN_COOKIE_SECRET`
-	- `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`
+	- `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`
+	- (recomendado) `GITHUB_BRANCH_PROD`, `GITHUB_BRANCH_DEV`, `CONTENT_ENV`
+	- (legacy) `GITHUB_BRANCH`
 
 Notas:
 
@@ -146,6 +148,55 @@ Variables:
 - `NEXT_PUBLIC_SITE_NAME`
 - `NEXT_PUBLIC_SITE_DESCRIPTION`
 - `NEXT_PUBLIC_SITE_URL`
+
+### Separación DEV/PRO de artículos (por branch)
+
+Este proyecto puede mantener artículos distintos en DEV y en PROD publicando/leyendo desde **branches distintos**.
+
+Recomendación:
+
+- `main`: artículos de **PRO**
+- `dev` (o `content-dev`): artículos de **DEV**
+
+Selección automática del branch:
+
+- Si defines `CONTENT_ENV` (manual):
+	- `CONTENT_ENV=prod` → `GITHUB_BRANCH_PROD` (o `GITHUB_BRANCH` o `main`)
+	- `CONTENT_ENV=dev` → `GITHUB_BRANCH_DEV` (o `GITHUB_BRANCH` o `dev`)
+- Si NO defines `CONTENT_ENV`:
+	- En Vercel usa `VERCEL_ENV` (`production` → prod, `preview/development` → dev)
+	- Si no hay Vercel, usa `NODE_ENV` (`production` → prod; cualquier otro → dev)
+
+Variables server-only recomendadas:
+
+- `GITHUB_BRANCH_PROD` (p. ej. `main`)
+- `GITHUB_BRANCH_DEV` (p. ej. `dev` o `content-dev`)
+- `CONTENT_ENV` (opcional en Vercel; útil en local)
+
+Compatibilidad:
+
+- Si solo configuras `GITHUB_BRANCH` (legacy), se usará ese branch tanto en dev como en prod.
+
+### Merge a `main` sin traer artículos ni imágenes (solo merges locales)
+
+Si quieres mergear **código** desde `dev` hacia `main` pero evitar que el merge incluya cambios en:
+
+- `articles/` (Markdown)
+- `public/images/` (imágenes)
+
+este repo incluye `.gitattributes` para mantener la versión de la rama destino en esas rutas.
+
+Requisito (una sola vez, en tu máquina):
+
+```bash
+git config merge.ours.driver true
+```
+
+Importante:
+
+- Esto aplica cuando haces el merge **localmente** (en tu PC) y luego haces push a `main`.
+- Si haces merge usando el botón de GitHub (PR "Merge"), GitHub no ejecuta tu configuración local (`merge.ours.driver`), por lo que esta regla puede no aplicarse.
+- Si necesitas que GitHub nunca meta artículos DEV a `main`, el enfoque más robusto es publicar DEV en un branch separado (p. ej. `content-dev`) y no mergearlo a `main`.
 
 Nota: cualquier variable `NEXT_PUBLIC_*` puede terminar expuesta en el bundle del cliente si se usa en componentes cliente.
 

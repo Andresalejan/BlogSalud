@@ -1,0 +1,4 @@
+# Evita que al mergear hacia main entren cambios de DEV en estas carpetas.
+# Mantiene SIEMPRE la versión de la rama destino ("ours"), aunque haya cambios en la rama origen.
+articles/** merge=ours
+public/images/** merge=ours
