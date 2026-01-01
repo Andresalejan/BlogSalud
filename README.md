@@ -191,8 +191,6 @@ Para que sea consistente (incluyendo borrados), usa el script incluido:
 ```bash
 powershell -ExecutionPolicy Bypass -File scripts/merge-dev-into-main.ps1
 ```
-esto es una prueba
-
 
 Este script hace el merge con `--no-commit` y luego restaura `articles/` y `public/images/` desde `main` antes del commit.
 
