@@ -336,7 +336,10 @@ export default function AdminPage() {
           throw new Error(json?.error ?? "Update failed")
         }
 
-        setSuccess(`Actualizado: ${json?.path ?? `articles/${editingSlug}.md`}`)
+        setSuccess(
+          `Actualizado en GitHub: ${json?.path ?? `articles/${editingSlug}.md`}. ` +
+            "Puede tardar ~30–60s en verse en la home (deploy/caché)."
+        )
       } else {
         if (!derivedSlug) throw new Error("Ingresa un título válido")
 
@@ -365,7 +368,10 @@ export default function AdminPage() {
           throw new Error(json?.error ?? "Publish failed")
         }
 
-        setSuccess(`Publicado: ${json?.path ?? "articles/"}`)
+        setSuccess(
+          `Publicado en GitHub: ${json?.path ?? "articles/"}. ` +
+            "Puede tardar ~30–60s en verse en la home (deploy/caché)."
+        )
       }
 
       // Éxito: limpiar formulario.
@@ -451,7 +457,10 @@ export default function AdminPage() {
 
       const deleted = deleteTarget
       setDeleteTarget(null)
-      setSuccess(`Eliminado: articles/${deleted.slug}.md`)
+      setSuccess(
+        `Eliminado en GitHub: articles/${deleted.slug}.md. ` +
+          "Puede tardar ~30–60s en verse reflejado (deploy/caché)."
+      )
       // Si el usuario estaba editando el mismo artículo, limpiamos el formulario.
       if (editingSlug === deleted.slug) {
         setEditingSlug(null)
