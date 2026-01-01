@@ -184,13 +184,15 @@ Si quieres mergear **código** desde `dev` hacia `main` pero evitar que el merge
 - `articles/` (Markdown)
 - `public/images/` (imágenes)
 
-este repo incluye `.gitattributes` para mantener la versión de la rama destino en esas rutas.
+Nota importante: `.gitattributes merge=ours` ayuda en algunos casos, pero **no evita borrados** cuando una rama elimina archivos (Git puede aplicar el borrado sin entrar a un merge de contenido).
 
-Requisito (una sola vez, en tu máquina):
+Para que sea consistente (incluyendo borrados), usa el script incluido:
 
 ```bash
-git config merge.ours.driver true
+powershell -ExecutionPolicy Bypass -File scripts/merge-dev-into-main.ps1
 ```
+
+Este script hace el merge con `--no-commit` y luego restaura `articles/` y `public/images/` desde `main` antes del commit.
 
 Importante:
 
