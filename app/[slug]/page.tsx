@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
 import { getArticleData } from "@/lib/server/articles"
 
@@ -13,6 +14,7 @@ const Article = async ({
   const { slug } = await params
   // Leemos el Markdown y lo convertimos a HTML en el servidor.
   const articleData = await getArticleData(slug)
+  if (!articleData) notFound()
 
   return (
     <section className="mx-auto w-11/12 md:w-1/2 py-10 flex flex-col gap-6">

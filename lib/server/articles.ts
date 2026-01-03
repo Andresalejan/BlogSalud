@@ -74,9 +74,20 @@ export const getCategorisedArticles = (): Record<string, ArticleItem[]> => {
  * El HTML se genera con `remark` + `remark-html`. El render final lo hace
  * la página del artículo.
  */
-export const getArticleData = async (id: string): Promise<ArticleData> => {
+export const getArticleData = async (id: string): Promise<ArticleData | null> => {
   // Carga el Markdown de un artículo concreto a partir del slug.
-  const fullPath = path.join(articlesDirectory, `${id}.md`)
+  // Importante: si el archivo no existe (o el slug es inválido), devolvemos `null`
+  // para que la ruta pueda renderizar un 404 (notFound) en vez de crashear con ENOENT.
+  const safeId = String(id ?? "").trim()
+
+  if (!safeId) return null
+  if (safeId.includes("..") || safeId.includes("/") || safeId.includes("\\")) return null
+
+  const fullPath = path.resolve(articlesDirectory, `${safeId}.md`)
+  const root = path.resolve(articlesDirectory) + path.sep
+  if (!fullPath.startsWith(root)) return null
+  if (!fs.existsSync(fullPath)) return null
+
   const fileContents = fs.readFileSync(fullPath, "utf-8")
 
   const matterResult = matter(fileContents)

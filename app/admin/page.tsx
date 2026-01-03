@@ -82,6 +82,9 @@ export default function AdminPage() {
   // Referencia al formulario para hacer scroll suave al editar.
   const formRef = useRef<HTMLDivElement | null>(null)
 
+  // Token para re-disparar animación del editor (sin librerías).
+  const [editorFxKey, setEditorFxKey] = useState(0)
+
   // Estado específico del caso “Editar”: mientras traemos los datos del artículo.
   const [loadingEdit, setLoadingEdit] = useState(false)
 
@@ -272,10 +275,17 @@ export default function AdminPage() {
     setBusy(true)
     setLoadingEdit(true)
 
-    // UX: al presionar Editar, subimos suavemente al inicio de la página.
-    // Lo hacemos inmediatamente para que el usuario vea que se está cargando.
+    // Reproduce una animación sutil en el editor.
+    setEditorFxKey((k) => k + 1)
+
+    // UX: al presionar Editar, llevamos al usuario al editor (donde verá “Cargando…”).
     requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+      const el = formRef.current
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" })
+      } else {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+      }
     })
     try {
       const res = await fetch(`/api/admin/articles/${encodeURIComponent(slug)}`, {
@@ -375,80 +385,87 @@ export default function AdminPage() {
     <div className="mx-auto max-w-3xl px-4 py-10">
       <h1 className="font-title text-3xl mb-6">Panel de autores</h1>
 
-      {!loggedIn ? (
-        <AdminLoginCard
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          usernameInputRef={usernameInputRef}
-          passwordInputRef={passwordInputRef}
-          busy={busy}
-          error={error}
-          doLogin={doLogin}
-        />
-      ) : (
-        <div className="space-y-6">
-          <AdminEditorCard
-            formRef={formRef}
-            editingSlug={editingSlug}
+      <div
+        key={loggedIn ? "admin:logged-in" : "admin:logged-out"}
+        className="page-transition-enter"
+      >
+        {!loggedIn ? (
+          <AdminLoginCard
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            usernameInputRef={usernameInputRef}
+            passwordInputRef={passwordInputRef}
             busy={busy}
-            loadingEdit={loadingEdit}
-            title={title}
-            setTitle={setTitle}
-            category={category}
-            setCategory={setCategory}
-            categories={categories}
-            newCategory={newCategory}
-            setNewCategory={setNewCategory}
-            useNewCategory={useNewCategory}
-            setUseNewCategory={setUseNewCategory}
-            content={content}
-            setContent={setContent}
-            derivedSlug={derivedSlug}
-            publish={publish}
-            addImagePlaceholder={(file) => {
-              setError(null)
-              setSuccess(null)
-              try {
-                addImagePlaceholder(file)
-              } catch (err) {
-                setError(err instanceof Error ? err.message : "No se pudo adjuntar la imagen")
-              }
-            }}
-            onResetToNew={() => {
-              setError(null)
-              setSuccess(null)
-              setEditingSlug(null)
-              setTitle("")
-              setCategory("")
-              setNewCategory("")
-              setUseNewCategory(false)
-              setContent("")
-              setImages([])
-            }}
             error={error}
-            success={success}
+            doLogin={doLogin}
           />
+        ) : (
+          <div className="space-y-6">
+            <div key={editorFxKey} className="page-transition-enter">
+              <AdminEditorCard
+                formRef={formRef}
+                editingSlug={editingSlug}
+                busy={busy}
+                loadingEdit={loadingEdit}
+                title={title}
+                setTitle={setTitle}
+                category={category}
+                setCategory={setCategory}
+                categories={categories}
+                newCategory={newCategory}
+                setNewCategory={setNewCategory}
+                useNewCategory={useNewCategory}
+                setUseNewCategory={setUseNewCategory}
+                content={content}
+                setContent={setContent}
+                derivedSlug={derivedSlug}
+                publish={publish}
+                addImagePlaceholder={(file) => {
+                  setError(null)
+                  setSuccess(null)
+                  try {
+                    addImagePlaceholder(file)
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : "No se pudo adjuntar la imagen")
+                  }
+                }}
+                onResetToNew={() => {
+                  setError(null)
+                  setSuccess(null)
+                  setEditingSlug(null)
+                  setTitle("")
+                  setCategory("")
+                  setNewCategory("")
+                  setUseNewCategory(false)
+                  setContent("")
+                  setImages([])
+                }}
+                error={error}
+                success={success}
+              />
+            </div>
 
-          <AdminArticlesCard
-            groupedArticles={groupedArticles}
-            loadingArticles={loadingArticles}
-            busy={busy}
-            startEdit={(slug) => void startEdit(slug)}
-            requestDelete={(t) => setDeleteTarget(t)}
-          />
-
-          {deleteTarget ? (
-            <DeleteConfirmModal
-              deleteTarget={deleteTarget}
+            <AdminArticlesCard
+              groupedArticles={groupedArticles}
+              loadingArticles={loadingArticles}
               busy={busy}
-              onCancel={() => setDeleteTarget(null)}
-              onConfirm={() => void confirmDelete()}
+              startEdit={(slug) => void startEdit(slug)}
+              requestDelete={(t) => setDeleteTarget(t)}
             />
-          ) : null}
-        </div>
-      )}
+
+            {deleteTarget ? (
+              <DeleteConfirmModal
+                deleteTarget={deleteTarget}
+                busy={busy}
+                onCancel={() => setDeleteTarget(null)}
+                onConfirm={() => void confirmDelete()}
+              />
+            ) : null}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

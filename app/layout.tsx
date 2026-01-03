@@ -4,6 +4,7 @@ import "./globals.css"
 
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
+import PageTransition from "./_components/PageTransition"
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -67,7 +68,9 @@ export default function RootLayout({
           <div className="relative z-20">
             <Navbar />
           </div>
-          <main className="relative z-10 flex-1">{children}</main>
+          <PageTransition className="relative z-10 flex-1">
+            {children}
+          </PageTransition>
           <div className="relative z-10">
             <Footer />
           </div>
