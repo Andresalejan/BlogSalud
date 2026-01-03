@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-violet-50">
       <body
-        className={`${cormorantGaramond.variable} ${poppins.variable} relative overflow-x-hidden bg-gradient-to-b from-violet-50 via-neutral-50 to-white text-neutral-900`}
+        className={`${cormorantGaramond.variable} ${poppins.variable} relative overflow-x-hidden bg-violet-50 bg-gradient-to-b from-violet-50 via-violet-50 to-violet-50 text-neutral-900`}
       >
         {/*
           Difuminados de fondo para dar identidad (violetas) sin invadir el contenido.
