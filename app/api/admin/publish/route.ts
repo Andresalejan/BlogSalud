@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 
 import { getAdminCookieName, verifyAdminSession } from "@/lib/server/adminAuth"
 import { getExistingFileSha, createSingleCommitWithFiles } from "@/lib/server/github"
+import { getContentBranch } from "@/lib/server/contentBranch"
 import { isValidSlug, slugify } from "@/lib/slug"
 
 // Este endpoint publica escribiendo en GitHub (Git Data API), por lo que requiere runtime Node.
@@ -120,7 +121,7 @@ export async function POST(req: Request) {
   const tokenEnv = process.env.GITHUB_TOKEN
   const owner = process.env.GITHUB_OWNER
   const repo = process.env.GITHUB_REPO
-  const branch = process.env.GITHUB_BRANCH ?? "main"
+  const branch = getContentBranch()
 
   if (!tokenEnv || !owner || !repo) {
     return NextResponse.json(

@@ -134,7 +134,7 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
               <span className="sr-only">{siteName}</span>
             </span>
             {contentEnv === "dev" ? (
-              <span className="inline-flex items-center rounded-full border border-violet-200 bg-violet-100 px-2 py-0.5 font-poppins text-[10px] font-semibold tracking-widest text-violet-900">
+              <span className="inline-flex items-center rounded-full border border-violet-200 bg-violet-100 px-2.5 py-1 font-poppins text-xs font-semibold tracking-widest text-violet-900">
                 DEV
               </span>
             ) : null}

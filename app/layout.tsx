@@ -23,6 +23,8 @@ const siteDescription =
   process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
   "Artículos de salud."
 
+const contentBranch = process.env.CONTENT_BRANCH ?? "main"
+
 export const metadata: Metadata = {
   title: `${siteName} · BlogSalud`,
   description: siteDescription,
@@ -66,7 +68,7 @@ export default function RootLayout({
           </div>
 
           <div className="relative z-20">
-            <Navbar />
+            <Navbar contentEnv={contentBranch === "dev" ? "dev" : "prod"} />
           </div>
           <PageTransition className="relative z-10 flex-1">
             {children}
