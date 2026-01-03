@@ -7,8 +7,8 @@ const HomePage = () => {
   return (
     <section className="mx-auto w-11/12 md:w-1/2 py-10 flex flex-col gap-12">
       <header className="text-center flex flex-col gap-3">
-        <h1 className="font-cormorantGaramond font-light text-5xl md:text-6xl text-rose-900 tracking-tight">
-          Salud femenina, claro y directo
+        <h1 className="font-cormorantGaramond font-light text-5xl md:text-6xl text-violet-900 tracking-tight">
+          Saber es sanar
         </h1>
         <p className="font-poppins text-base md:text-lg text-neutral-700">
           Artículos pensados para acompañarte con información clara y cuidadosa.
