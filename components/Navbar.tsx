@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 
 type ArticleIndexItem = {
@@ -24,11 +23,6 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
 
   // Logo del título (archivo en /public). Nota: el nombre incluye espacios, por eso va URL-encoded.
   const siteLogoSrc = "/ginesavia%20web%20blanco-01.png"
-
-  // Necesitamos saber en qué ruta estamos para mostrar la barra de búsqueda
-  // únicamente en la home.
-  const pathname = usePathname()
-  const isHome = pathname === "/"
 
   // Estado del input y su versión “debounced” (para no filtrar en cada tecla).
   const [query, setQuery] = useState("")
@@ -56,8 +50,7 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
   }, [query])
 
   useEffect(() => {
-    // Solo cargamos el índice en la home.
-    if (!isHome) return
+    // Cargamos el índice una sola vez y reutilizamos en todas las rutas.
     // Evita: re-fetch infinito y requests canceladas.
     if (indexLoadedRef.current || indexInFlightRef.current) return
 
@@ -104,11 +97,9 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
       indexInFlightRef.current = false
       controller.abort()
     }
-  }, [isHome])
+  }, [])
 
   const results = useMemo(() => {
-    // Solo calculamos resultados si estamos en la home y hay query.
-    if (!isHome) return []
     if (!debouncedQuery) return []
 
     // Búsqueda simple “contains” por título y por categoría.
@@ -120,7 +111,7 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
         return title.includes(q) || category.includes(q)
       })
       .slice(0, 8)
-  }, [articleIndex, debouncedQuery, isHome])
+  }, [articleIndex, debouncedQuery])
 
   return (
     <header className="relative z-50 w-full border-b border-violet-100 bg-violet-50/70 backdrop-blur supports-[backdrop-filter]:bg-violet-50/60">
@@ -157,71 +148,68 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
           <Link href="/" className="px-2 py-1 text-neutral-800 hover:text-violet-800 transition">
             Inicio
           </Link>
-          <Link href="/#articles" className="px-2 py-1 text-neutral-800 hover:text-violet-800 transition">
-            Artículos
-          </Link>
           <Link href="/sobre-nosotros" className="px-2 py-1 text-neutral-800 hover:text-violet-800 transition">
             Sobre nosotros
           </Link>
 
-          {isHome ? (
-            <div className="relative w-full md:w-auto md:min-w-56">
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                aria-label="Buscar por categoría o título"
-                // Placeholder dinámico para indicar estado.
-                placeholder={isLoadingIndex ? "Cargando…" : "Buscar…"}
-                className="w-full min-w-0 rounded-full border border-violet-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-violet-200 md:w-56"
-              />
+          <div className="relative w-full md:w-auto md:min-w-72">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              aria-label="Buscar por categoría o título"
+              // Placeholder dinámico para indicar estado.
+              placeholder={
+                isLoadingIndex ? "Cargando…" : "Buscar temas, síntomas, dudas…"
+              }
+              className="w-full min-w-0 rounded-full border border-violet-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-violet-200 md:w-72"
+            />
 
-              {indexError ? (
-                // Mensaje de error pequeño debajo del input.
-                <div className="absolute left-0 right-0 mt-2 rounded-xl border border-violet-100 bg-white px-3 py-2 text-xs text-neutral-700 md:left-auto md:right-0 md:w-72">
-                  {indexError}
-                </div>
-              ) : null}
+            {indexError ? (
+              // Mensaje de error pequeño debajo del input.
+              <div className="absolute left-0 right-0 mt-2 rounded-xl border border-violet-100 bg-white px-3 py-2 text-xs text-neutral-700 md:left-auto md:right-0 md:w-72">
+                {indexError}
+              </div>
+            ) : null}
 
-              {debouncedQuery ? (
-                // Dropdown de resultados: aparece solo si hay texto.
-                <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-violet-100 bg-white md:left-auto md:right-0 md:w-72">
-                  {results.length > 0 ? (
-                    <ul
-                      className={
-                        results.length > 4
-                          ? "max-h-56 overflow-y-auto"
-                          : "overflow-y-auto"
-                      }
-                    >
-                      {results.map((item) => (
-                        <li key={item.id}>
-                          <Link
-                            href={`/${item.id}`}
-                            // UX: limpiamos el input al seleccionar un resultado.
-                            onClick={() => setQuery("")}
-                            className="block px-4 py-3 hover:bg-violet-50 transition"
-                          >
-                            <div className="text-sm text-neutral-900">
-                              {item.title}
+            {debouncedQuery ? (
+              // Dropdown de resultados: aparece solo si hay texto.
+              <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-violet-100 bg-white md:left-auto md:right-0 md:w-72">
+                {results.length > 0 ? (
+                  <ul
+                    className={
+                      results.length > 4
+                        ? "max-h-56 overflow-y-auto"
+                        : "overflow-y-auto"
+                    }
+                  >
+                    {results.map((item) => (
+                      <li key={item.id}>
+                        <Link
+                          href={`/${item.id}`}
+                          // UX: limpiamos el input al seleccionar un resultado.
+                          onClick={() => setQuery("")}
+                          className="block px-4 py-3 hover:bg-violet-50 transition"
+                        >
+                          <div className="text-sm text-neutral-900">
+                            {item.title}
+                          </div>
+                          {item.category ? (
+                            <div className="text-xs text-neutral-600">
+                              {item.category}
                             </div>
-                            {item.category ? (
-                              <div className="text-xs text-neutral-600">
-                                {item.category}
-                              </div>
-                            ) : null}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div className="px-4 py-3 text-xs text-neutral-700">
-                      Sin resultados
-                    </div>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
+                          ) : null}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="px-4 py-3 text-xs text-neutral-700">
+                    Sin resultados
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
         </div>
       </nav>
     </header>
