@@ -64,7 +64,7 @@ export default function RootLayout({
             <div className="absolute top-[92%] left-[70%] h-72 w-72 -translate-x-1/2 rounded-full bg-fuchsia-100/25 blur-3xl" />
           </div>
 
-          <div className="relative z-10">
+          <div className="relative z-20">
             <Navbar />
           </div>
           <main className="relative z-10 flex-1">{children}</main>

@@ -123,7 +123,7 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
   }, [articleIndex, debouncedQuery, isHome])
 
   return (
-    <header className="w-full border-b border-violet-100 bg-violet-50/70 backdrop-blur supports-[backdrop-filter]:bg-violet-50/60">
+    <header className="relative z-50 w-full border-b border-violet-100 bg-violet-50/70 backdrop-blur supports-[backdrop-filter]:bg-violet-50/60">
       <nav className="mx-auto w-11/12 max-w-5xl py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <Link href="/" className="flex items-center leading-none shrink-0">
           <span className="flex items-center gap-2 font-cormorantGaramond text-2xl tracking-tight text-violet-900">
@@ -184,9 +184,15 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
 
               {debouncedQuery ? (
                 // Dropdown de resultados: aparece solo si hay texto.
-                <div className="absolute left-0 right-0 mt-2 overflow-hidden rounded-xl border border-violet-100 bg-white md:left-auto md:right-0 md:w-72">
+                <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-violet-100 bg-white md:left-auto md:right-0 md:w-72">
                   {results.length > 0 ? (
-                    <ul className="max-h-80 overflow-auto">
+                    <ul
+                      className={
+                        results.length > 4
+                          ? "max-h-56 overflow-y-auto"
+                          : "overflow-y-auto"
+                      }
+                    >
                       {results.map((item) => (
                         <li key={item.id}>
                           <Link
