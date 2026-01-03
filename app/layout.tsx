@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
+    <html lang="es" className="bg-violet-50">
       <body
         className={`${cormorantGaramond.variable} ${poppins.variable} relative overflow-x-hidden bg-gradient-to-b from-violet-50 via-neutral-50 to-white text-neutral-900`}
       >

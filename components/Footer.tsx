@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="w-full border-t border-violet-100 bg-white">
+    <footer className="w-full border-t border-violet-100 bg-transparent">
       <div className="mx-auto w-11/12 max-w-5xl py-10 flex flex-col gap-2">
         <p className="font-cormorantGaramond text-xl text-violet-900">
           Salud Femenina
