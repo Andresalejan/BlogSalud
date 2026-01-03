@@ -37,6 +37,12 @@ Blog minimalista orientado a artículos de salud femenina escritos en Markdown. 
 - `lib/articles.ts`: Lectura del filesystem + parseo de frontmatter + conversión Markdown → HTML
 - `components/`: Componentes reutilizables
 
+## Mapa de rutas (URL → archivo)
+
+Para ubicar rápidamente qué `route.ts` corresponde a cada endpoint y qué `page.tsx` corresponde a cada pantalla:
+
+- Ver [docs/routes.md](docs/routes.md)
+
 ## Requisitos
 
 - Node.js 18+ (recomendado)

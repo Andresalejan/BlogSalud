@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { getSortedArticles } from "@/lib/articles"
+import { getSortedArticles } from "@/lib/server/articles"
 
 // Revalida la respuesta (ISR) cada 1h.
 // Esto evita recalcular y enviar el índice en cada request, pero permite

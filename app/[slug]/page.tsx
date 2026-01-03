@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
-import { getArticleData } from "@/lib/articles"
+import { getArticleData } from "@/lib/server/articles"
 
 // Página de ruta dinámica: /[slug]
 // Ejemplo: /how-to-write-clean-code -> slug = "how-to-write-clean-code"

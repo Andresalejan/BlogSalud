@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 
-import { getAdminCookieName, verifyAdminSession } from "@/lib/adminAuth"
-import { getExistingFileSha } from "@/lib/githubContents"
-import { createSingleCommitWithFiles } from "@/lib/githubGitData"
+import { getAdminCookieName, verifyAdminSession } from "@/lib/server/adminAuth"
+import { getExistingFileSha, createSingleCommitWithFiles } from "@/lib/server/github"
 import { isValidSlug, slugify } from "@/lib/slug"
 
 // Este endpoint publica escribiendo en GitHub (Git Data API), por lo que requiere runtime Node.

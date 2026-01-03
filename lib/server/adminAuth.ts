@@ -32,15 +32,19 @@ const base64UrlDecode = (value: string): Buffer => {
 
 const hmac = (secret: string, payloadB64: string): string => {
   // Firma determinística: HMAC-SHA256(payloadB64, secret)
-  const sig = crypto
-    .createHmac("sha256", secret)
-    .update(payloadB64)
-    .digest()
+  const sig = crypto.createHmac("sha256", secret).update(payloadB64).digest()
   return base64UrlEncode(sig)
 }
 
 export const getAdminCookieName = () => COOKIE_NAME
 
+/**
+ * Firma una sesión de admin para guardar en cookie HttpOnly.
+ *
+ * Devuelve un token con formato: `base64url(payload).base64url(signature)`.
+ * - payload: `{ exp }`
+ * - signature: HMAC-SHA256(payloadB64, secret)
+ */
 export const signAdminSession = (secret: string, expSecondsFromNow: number) => {
   // Token: base64url(payload).base64url(signature)
   // El payload solo contiene exp; el secreto queda del lado del servidor.
@@ -52,6 +56,14 @@ export const signAdminSession = (secret: string, expSecondsFromNow: number) => {
   return `${payloadB64}.${sig}`
 }
 
+/**
+ * Verifica un token de sesión admin.
+ *
+ * Valida:
+ * - que tenga el formato esperado
+ * - que la firma coincida (comparación timing-safe)
+ * - que no esté expirado
+ */
 export const verifyAdminSession = (secret: string, token: string | undefined) => {
   // Validación defensiva: formato correcto, firma correcta (timing-safe) y no expirado.
   if (!token) return { ok: false as const }

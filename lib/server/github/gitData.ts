@@ -1,14 +1,15 @@
 // Publicación “atómica” a GitHub: crea UN commit que incluye múltiples archivos.
 //
-// Usamos Git Data API en vez de Contents API para evitar múltiples commits
-// (uno por archivo). Esto es especialmente importante cuando el artículo incluye
-// imágenes: queremos que Markdown + imágenes entren juntos cuando el usuario hace Publish.
+// ¿Por qué Git Data API?
+// - Contents API crea/actualiza un archivo por request/commit.
+// - Para publicar un artículo con imágenes en un solo commit (markdown + n imágenes),
+//   es más confiable crear blobs + árbol + commit y actualizar la ref.
 
-import type { GitHubPublishConfig } from "@/lib/githubContents"
+import type { GitHubPublishConfig } from "./contents"
 
 const githubApiBase = "https://api.github.com"
 
-// Ver explicación en lib/githubContents.ts.
+// Ver explicación en ./contents.ts.
 const githubAuthHeader = (token: string) => {
   const scheme = token.startsWith("ghp_") ? "token" : "Bearer"
   return `${scheme} ${token}`
@@ -44,9 +45,7 @@ type CreateCommitResponse = {
 
 export type GitFileToCommit = {
   path: string
-  // Base64 del contenido del blob.
   contentBase64: string
-  // Opcional: si no se pasa, usamos 100644 (archivo normal).
   mode?: "100644"
 }
 
@@ -101,13 +100,11 @@ const createBlob = async (cfg: GitHubPublishConfig, contentBase64: string) => {
   if (!res.ok) {
     const text = await res.text().catch(() => "")
     if (res.status === 401) {
-      throw new Error(
-        "GitHub auth failed (401). Revisa GITHUB_TOKEN y reinicia el servidor."
-      )
+      throw new Error("GitHub auth failed (401). Revisa GITHUB_TOKEN y reinicia el servidor.")
     }
     if (res.status === 404) {
       throw new Error(
-        "GitHub returned 404 when creating a blob. Esto suele pasar si el token NO tiene acceso al repositorio (repo privado sin scope `repo`, usuario sin permisos, o SSO sin autorizar) o si GITHUB_OWNER/GITHUB_REPO no existen."
+        "GitHub returned 404 when creating a blob. Esto suele pasar si el token NO tiene acceso al repositorio o si GITHUB_OWNER/GITHUB_REPO no existen."
       )
     }
     throw new Error(`GitHub POST blob failed (${res.status}): ${text}`)
@@ -188,14 +185,16 @@ export const createSingleCommitWithFiles = async (args: {
   cfg: GitHubPublishConfig
   message: string
   files: GitFileToCommit[]
-  // Paths a borrar en el mismo commit.
-  // Nota: GitHub soporta borrado en createTree pasando sha:null.
   deletePaths?: string[]
 }) => {
+  // Flujo:
+  // 1) head ref -> commit -> base tree
+  // 2) crear blobs para cada archivo
+  // 3) crear tree nuevo (incluye deletes con sha=null)
+  // 4) crear commit y mover la ref del branch
   const headSha = await getHeadRef(args.cfg)
   const headCommit = await getCommit(args.cfg, headSha)
 
-  // 1) Crear blobs.
   const blobs = await Promise.all(
     args.files.map(async (f) => {
       const blobSha = await createBlob(args.cfg, f.contentBase64)
@@ -208,22 +207,20 @@ export const createSingleCommitWithFiles = async (args: {
     })
   )
 
-  // 1b) Entradas de borrado (sha:null) para eliminar archivos que ya no se usan.
   const deletes = (args.deletePaths ?? []).map((p) => ({
+    // En Git Data API: `sha: null` indica “borrar este path del tree”.
     path: p,
     mode: "100644",
     type: "blob" as const,
     sha: null,
   }))
 
-  // 2) Crear tree basado en el tree actual.
   const treeSha = await createTree({
     cfg: args.cfg,
     baseTreeSha: headCommit.tree.sha,
     entries: [...blobs, ...deletes],
   })
 
-  // 3) Crear commit y mover el ref del branch.
   const commitSha = await createCommit({
     cfg: args.cfg,
     message: args.message,
@@ -232,6 +229,5 @@ export const createSingleCommitWithFiles = async (args: {
   })
 
   await updateRef(args.cfg, commitSha)
-
   return { commitSha }
 }

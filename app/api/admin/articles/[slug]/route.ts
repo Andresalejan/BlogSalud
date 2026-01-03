@@ -2,13 +2,13 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import matter from "gray-matter"
 
-import { getAdminCookieName, verifyAdminSession } from "@/lib/adminAuth"
+import { getAdminCookieName, verifyAdminSession } from "@/lib/server/adminAuth"
 import {
   getExistingFileSha,
   getFileContentUtf8,
   listDirectory,
-} from "@/lib/githubContents"
-import { createSingleCommitWithFiles } from "@/lib/githubGitData"
+  createSingleCommitWithFiles,
+} from "@/lib/server/github"
 
 // Endpoint ADMIN (server-only): leer/editar/eliminar un artículo por slug.
 export const runtime = "nodejs"

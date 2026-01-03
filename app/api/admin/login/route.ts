@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 
-import { getAdminCookieName, signAdminSession } from "@/lib/adminAuth"
+import { getAdminCookieName, signAdminSession } from "@/lib/server/adminAuth"
 
 // Importante: este endpoint depende de APIs Node (cookies/crypto), así que forzamos runtime Node.
 export const runtime = "nodejs"

@@ -1,5 +1,5 @@
 import ArticleItemList from "@/components/ArticleListItem"
-import { getCategorisedArticles } from "@/lib/articles"
+import { getCategorisedArticles } from "@/lib/server/articles"
 
 const HomePage = () => {
   // Obtiene artículos agrupados por categoría leyendo los Markdown del directorio /articles.
