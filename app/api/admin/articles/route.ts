@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import matter from "gray-matter"
 
-import { getAdminCookieName, verifyAdminSession } from "@/lib/adminAuth"
+import { getAdminCookieName, verifyAdminSession } from "@/lib/server/adminAuth"
 
 // Endpoint ADMIN (server-only): lista artículos directamente desde GitHub.
 // Se usa para poblar el panel /admin con el contenido real del repo.

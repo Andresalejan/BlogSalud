@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -20,6 +21,9 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
   const siteDescription =
     process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
     "Artículos de salud femenina."
+
+  // Logo del título (archivo en /public). Nota: el nombre incluye espacios, por eso va URL-encoded.
+  const siteLogoSrc = "/ginesavia%20web%20blanco-01.png"
 
   // Necesitamos saber en qué ruta estamos para mostrar la barra de búsqueda
   // únicamente en la home.
@@ -119,30 +123,44 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
   }, [articleIndex, debouncedQuery, isHome])
 
   return (
-    <header className="w-full border-b border-rose-100 bg-rose-50/70 backdrop-blur supports-[backdrop-filter]:bg-rose-50/60">
-      <nav className="mx-auto w-11/12 md:w-1/2 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <Link href="/" className="flex flex-col leading-none">
-          <span className="flex items-center gap-2 font-cormorantGaramond text-2xl tracking-tight text-rose-900">
-            <span>{siteName}</span>
+    <header className="relative z-50 w-full border-b border-violet-100 bg-violet-50/70 backdrop-blur supports-[backdrop-filter]:bg-violet-50/60">
+      <nav className="mx-auto w-11/12 max-w-5xl py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <Link href="/" className="flex items-center leading-none shrink-0">
+          <span className="flex items-center gap-2 font-cormorantGaramond text-2xl tracking-tight text-violet-900">
+            <span className="inline-flex items-center">
+              <Image
+                src={siteLogoSrc}
+                alt={siteName}
+                width={720}
+                height={180}
+                priority
+                // Usamos tamaños que existen en Tailwind y una base suficientemente grande.
+                // Con zoom, el viewport efectivo cambia y puede activar/desactivar breakpoints.
+                // Esta escala evita saltos donde el logo queda demasiado pequeño.
+                sizes="(max-width: 768px) 75vw, 520px"
+                className="relative -top-3 h-16 sm:h-20 md:h-24 lg:h-24 w-auto"
+              />
+              <span className="sr-only">{siteName}</span>
+            </span>
             {contentEnv === "dev" ? (
-              <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-100 px-2 py-0.5 font-poppins text-[10px] font-semibold tracking-widest text-rose-900">
+              <span className="inline-flex items-center rounded-full border border-violet-200 bg-violet-100 px-2 py-0.5 font-poppins text-[10px] font-semibold tracking-widest text-violet-900">
                 DEV
               </span>
             ) : null}
           </span>
-          <span className="font-poppins text-xs tracking-wide text-rose-700/90">
+          {/* <span className="font-poppins text-xs tracking-wide text-violet-700/90">
             {siteDescription}
-          </span>
+          </span> */}
         </Link>
 
         <div className="flex w-full flex-wrap items-center gap-x-4 gap-y-3 font-poppins text-sm md:w-auto md:flex-nowrap md:justify-end">
-          <Link href="/" className="px-2 py-1 text-neutral-800 hover:text-rose-800 transition">
+          <Link href="/" className="px-2 py-1 text-neutral-800 hover:text-violet-800 transition">
             Inicio
           </Link>
-          <Link href="/#articles" className="px-2 py-1 text-neutral-800 hover:text-rose-800 transition">
+          <Link href="/#articles" className="px-2 py-1 text-neutral-800 hover:text-violet-800 transition">
             Artículos
           </Link>
-          <Link href="/sobre-nosotros" className="px-2 py-1 text-neutral-800 hover:text-rose-800 transition">
+          <Link href="/sobre-nosotros" className="px-2 py-1 text-neutral-800 hover:text-violet-800 transition">
             Sobre nosotros
           </Link>
 
@@ -154,28 +172,34 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
                 aria-label="Buscar por categoría o título"
                 // Placeholder dinámico para indicar estado.
                 placeholder={isLoadingIndex ? "Cargando…" : "Buscar…"}
-                className="w-full min-w-0 rounded-full border border-rose-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-rose-200 md:w-56"
+                className="w-full min-w-0 rounded-full border border-violet-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-violet-200 md:w-56"
               />
 
               {indexError ? (
                 // Mensaje de error pequeño debajo del input.
-                <div className="absolute left-0 right-0 mt-2 rounded-xl border border-rose-100 bg-white px-3 py-2 text-xs text-neutral-700 md:left-auto md:right-0 md:w-72">
+                <div className="absolute left-0 right-0 mt-2 rounded-xl border border-violet-100 bg-white px-3 py-2 text-xs text-neutral-700 md:left-auto md:right-0 md:w-72">
                   {indexError}
                 </div>
               ) : null}
 
               {debouncedQuery ? (
                 // Dropdown de resultados: aparece solo si hay texto.
-                <div className="absolute left-0 right-0 mt-2 overflow-hidden rounded-xl border border-rose-100 bg-white md:left-auto md:right-0 md:w-72">
+                <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-violet-100 bg-white md:left-auto md:right-0 md:w-72">
                   {results.length > 0 ? (
-                    <ul className="max-h-80 overflow-auto">
+                    <ul
+                      className={
+                        results.length > 4
+                          ? "max-h-56 overflow-y-auto"
+                          : "overflow-y-auto"
+                      }
+                    >
                       {results.map((item) => (
                         <li key={item.id}>
                           <Link
                             href={`/${item.id}`}
                             // UX: limpiamos el input al seleccionar un resultado.
                             onClick={() => setQuery("")}
-                            className="block px-4 py-3 hover:bg-rose-50 transition"
+                            className="block px-4 py-3 hover:bg-violet-50 transition"
                           >
                             <div className="text-sm text-neutral-900">
                               {item.title}
