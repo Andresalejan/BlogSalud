@@ -159,7 +159,7 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
               aria-label="Buscar por categoría o título"
               // Placeholder dinámico para indicar estado.
               placeholder={
-                isLoadingIndex ? "Cargando…" : "Buscar otra prueba DEV"
+                isLoadingIndex ? "Cargando…" : "Buscar temas, síntomas, dudas…"
               }
               className="w-full min-w-0 rounded-full border border-violet-100 bg-white px-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-violet-200 md:w-72"
             />
