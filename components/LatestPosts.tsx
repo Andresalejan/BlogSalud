@@ -39,7 +39,7 @@ export default function LatestPosts() {
                   <span className="line-clamp-1">{article.category}</span>
                 </Link>
                 {/* Fecha del artículo (del frontmatter) */}
-                <time className="font-poppins text-sm text-neutral-600">{article.date}</time>
+                <time className="font-poppins text-xs text-neutral-600">{article.date}</time>
               </div>
 
               <h3 className="mt-4 font-cormorantGaramond text-2xl md:text-3xl leading-tight text-violet-900">
