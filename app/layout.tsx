@@ -1,18 +1,20 @@
 import type { Metadata } from "next"
-import { Cormorant_Garamond, Poppins } from "next/font/google"
+import { Inter, Lora } from "next/font/google"
 import "./globals.css"
 
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import PageTransition from "./_components/PageTransition"
-
-const cormorantGaramond = Cormorant_Garamond({
+// Tipografías del sitio:
+// - Texto/cuerpo: Inter (muy legible en pantallas)
+// - Títulos: Lora (serif editorial, buena lectura)
+const lora = Lora({
   subsets: ["latin"],
   variable: "--font-cormorant-garamond",
-  weight: ["400"],
+  weight: ["400", "600"],
 })
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-poppins",
   weight: ["400", "600"],
@@ -38,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-violet-50">
       <body
-        className={`${cormorantGaramond.variable} ${poppins.variable} relative overflow-x-hidden bg-violet-50 bg-gradient-to-b from-violet-50 via-violet-50 to-violet-50 text-neutral-900`}
+        className={`${lora.variable} ${inter.variable} relative overflow-x-hidden bg-violet-50 bg-gradient-to-b from-violet-50 via-violet-50 to-violet-50 text-neutral-900`}
       >
         <div className="min-h-dvh flex flex-col relative isolate">
           {/*
