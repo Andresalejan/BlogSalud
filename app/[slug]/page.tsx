@@ -1,8 +1,8 @@
-import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeftIcon } from "@heroicons/react/24/solid"
+import Link from "next/link"
 import { getArticleData } from "@/lib/server/articles"
 import { slugify } from "@/lib/slug"
+import BackButton from "@/components/BackButton"
 
 // Página de ruta dinámica: /[slug]
 // Ejemplo: /how-to-write-clean-code -> slug = "how-to-write-clean-code"
@@ -20,13 +20,7 @@ const Article = async ({
   return (
     <section className="mx-auto w-11/12 md:w-1/2 py-10 flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4 font-poppins text-sm text-neutral-700">
-        <Link
-          href={"/"}
-          className="flex flex-row gap-2 items-center text-neutral-800 hover:text-violet-800 transition"
-        >
-          <ArrowLeftIcon width={18} />
-          <span>Volver al inicio</span>
-        </Link>
+        <BackButton className="flex flex-row gap-2 items-center text-neutral-800 hover:text-violet-800 transition" />
 
         <div className="flex items-center gap-3">
           {articleData.category ? (
@@ -41,7 +35,7 @@ const Article = async ({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-violet-100 bg-white px-6 py-8 md:px-10 md:py-10">
+      <div className="glass-surface px-6 py-8 md:px-10 md:py-10">
         <article
           className="article"
           // `dangerouslySetInnerHTML` inserta HTML directamente.

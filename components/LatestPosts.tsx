@@ -27,16 +27,16 @@ export default function LatestPosts() {
           return (
             <article
               key={article.id}
-              className="group rounded-2xl border border-violet-100 bg-white/70 p-6 md:p-7 shadow-sm"
+              className="group card-surface p-6 md:p-7 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_60px_-30px_rgba(16,24,40,0.35)]"
             >
               <div className="flex items-center justify-between gap-4">
                 {/* Chip de categoría (link) con icono */}
                 <Link
                   href={`/categoria/${categorySlug}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-white/70 px-3 py-1 font-poppins text-sm text-neutral-700 transition hover:text-violet-900"
+                  className="inline-flex items-center gap-2 rounded-full bg-white/55 px-3 py-1 font-poppins text-sm text-neutral-700 ring-1 ring-black/5 transition hover:bg-white/65 hover:text-violet-900"
                 >
                   <CategoryIcon category={article.category} />
-                  <span className="line-clamp-1">{article.category}</span>
+                  <span className="max-w-[12rem] truncate">{article.category}</span>
                 </Link>
                 {/* Fecha del artículo (del frontmatter) */}
                 <time className="font-poppins text-xs text-neutral-600">{article.date}</time>

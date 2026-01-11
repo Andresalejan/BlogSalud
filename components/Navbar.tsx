@@ -114,7 +114,7 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
   }, [articleIndex, debouncedQuery])
 
   return (
-    <header className="relative z-50 w-full border-b border-violet-100 bg-violet-50/70 backdrop-blur supports-[backdrop-filter]:bg-violet-50/60">
+    <header className="relative z-50 w-full border-b border-violet-100 bg-white/70 shadow-sm md:bg-white/38 md:backdrop-blur-xl supports-[backdrop-filter]:md:bg-white/30">
       <nav className="mx-auto w-11/12 max-w-5xl py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <Link href="/" className="flex items-center leading-none shrink-0">
           <span className="flex items-center gap-2 font-cormorantGaramond text-2xl tracking-tight text-violet-900">

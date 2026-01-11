@@ -38,79 +38,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" className="bg-violet-50">
-      <body className={`${lora.variable} ${inter.variable} bg-[#faf7fd] text-neutral-900`}>
+    <html lang="es" className="h-full">
+      <body
+        className={`${lora.variable} ${inter.variable} min-h-dvh text-slate-900 antialiased`}
+      >
+        {/* Modern background system: gradient + grid + subtle noise */}
+        <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+          <div className="absolute inset-0 app-bg" />
+          <div className="absolute inset-0 app-noise" />
+          <div className="absolute inset-0 app-vignette" />
+        </div>
 
-        <div className="min-h-dvh flex flex-col relative isolate">
-          {/*
-            Difuminados de fondo para dar identidad (violetas) sin invadir el contenido.
-            Importante: este layer vive dentro del contenedor principal para heredar su altura
-            (crece con el contenido), y así el fondo no se siente uniforme al hacer scroll.
-          */}
-<div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-  {/* Blob principal superior (en móvil: más grande, menos opacidad, más blur y más lejos) */}
-  <div
-    className="
-      absolute -top-64 -left-64
-      h-[44rem] w-[44rem]
-      rounded-full bg-violet-300/20 blur-[170px]
-      md:-top-40 md:-left-40
-      md:h-[36rem] md:w-[36rem]
-      md:bg-violet-300/45 md:blur-[120px]
-    "
-  />
-
-  {/* Contrapunto superior */}
-  <div
-    className="
-      absolute -top-56 right-[-18rem]
-      h-[46rem] w-[46rem]
-      rounded-full bg-fuchsia-300/18 blur-[180px]
-      md:-top-32 md:right-[-10rem]
-      md:h-[34rem] md:w-[34rem]
-      md:bg-fuchsia-300/40 md:blur-[120px]
-    "
-  />
-
-  {/* Blob central izquierda */}
-  <div
-    className="
-      absolute top-[38%] -left-72
-      h-[52rem] w-[52rem]
-      rounded-full bg-violet-200/22 blur-[190px]
-      md:top-[35%] md:-left-48
-      md:h-[40rem] md:w-[40rem]
-      md:bg-violet-200/45 md:blur-[140px]
-    "
-  />
-
-  {/* Blob central derecha */}
-  <div
-    className="
-      absolute top-[48%] right-[-26rem]
-      h-[50rem] w-[50rem]
-      rounded-full bg-fuchsia-200/20 blur-[200px]
-      md:top-[45%] md:right-[-18rem]
-      md:h-[38rem] md:w-[38rem]
-      md:bg-fuchsia-200/40 md:blur-[140px]
-    "
-  />
-
-  {/* Blob inferior */}
-  <div
-    className="
-      absolute bottom-[-35%] left-1/2
-      h-[56rem] w-[56rem] -translate-x-1/2
-      rounded-full bg-violet-300/18 blur-[220px]
-      md:bottom-[-25%] md:left-1/3
-      md:h-[42rem] md:w-[42rem]
-      md:bg-violet-300/35 md:blur-[160px]
-    "
-  />
-</div>
-
-
-
+        <div className="min-h-dvh flex flex-col relative">
           <div className="relative z-20">
             <Navbar contentEnv={contentBranch === "dev" ? "dev" : "prod"} />
           </div>

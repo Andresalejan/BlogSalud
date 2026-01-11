@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="w-full border-t border-violet-100 bg-transparent">
+    <footer className="w-full border-t border-violet-100 bg-white/70 md:bg-white/38 md:backdrop-blur-xl supports-[backdrop-filter]:md:bg-white/30">
       <div className="mx-auto w-11/12 max-w-5xl py-10 flex flex-col gap-2">
         <p className="font-cormorantGaramond text-xl text-violet-900">
           GINESAVIA

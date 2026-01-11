@@ -28,7 +28,10 @@ const HomePage = () => {
           Categorías
         </h2>
 
-        <section id="articles" className="md:grid md:grid-cols-2 flex flex-col gap-10 scroll-mt-24">
+        <section
+          id="articles"
+          className="flex flex-col gap-10 scroll-mt-24 md:grid md:grid-cols-2 md:items-stretch"
+        >
           {/* Pintamos una "sección" por categoría, y dentro enlaces a cada artículo */}
           {articles !== null &&
             sortedCategories.map((category) => (

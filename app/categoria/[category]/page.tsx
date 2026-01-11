@@ -1,12 +1,12 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeftIcon } from "@heroicons/react/24/solid"
 
 import { isValidSlug } from "@/lib/slug"
 import {
   getArticlesByCategorySlug,
   getCategorySlugs,
 } from "@/lib/server/articles"
+import BackButton from "@/components/BackButton"
 
 const CategoryPage = async ({
   params,
@@ -27,13 +27,7 @@ const CategoryPage = async ({
   return (
     <section className="mx-auto w-11/12 md:w-1/2 py-12 md:py-14 flex flex-col gap-8">
       <div className="flex items-center justify-between gap-4 font-poppins text-sm text-neutral-700">
-        <Link
-          href="/"
-          className="flex flex-row gap-2 items-center text-neutral-800 hover:text-violet-800 transition"
-        >
-          <ArrowLeftIcon width={18} />
-          <span>Volver al inicio</span>
-        </Link>
+        <BackButton className="flex flex-row gap-2 items-center text-neutral-800 hover:text-violet-800 transition" />
 
         <Link
           href="/#articles"

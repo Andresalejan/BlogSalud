@@ -2,7 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --app-bg: 250 247 253;
+    --app-spot-a: 168 85 247;
+    --app-spot-b: 236 72 153;
+    --app-spot-c: 99 102 241;
+    --app-grid: 15 23 42;
+  }
+
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    background-color: rgb(var(--app-bg));
+    text-rendering: geometricPrecision;
+  }
+}
+
 @layer utilities {
+  .app-bg {
+    background-color: rgb(var(--app-bg));
+    background-image:
+      radial-gradient(1200px circle at 12% 6%, rgba(var(--app-spot-a) / 0.16), transparent 55%),
+      radial-gradient(1100px circle at 90% 12%, rgba(var(--app-spot-b) / 0.14), transparent 52%),
+      radial-gradient(900px circle at 55% 85%, rgba(var(--app-spot-c) / 0.10), transparent 58%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+  }
+
+  .app-grid {
+    background-image:
+      linear-gradient(to right, rgba(var(--app-grid) / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--app-grid) / 0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(circle at 50% 10%, black 35%, transparent 72%);
+    opacity: 0.55;
+  }
+
+  .app-noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+    opacity: 0.045;
+    mix-blend-mode: overlay;
+  }
+
+  .app-vignette {
+    background: radial-gradient(1200px circle at 50% 10%, transparent 0%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.24) 100%);
+    opacity: 0.55;
+  }
+
+  .glass-surface {
+    @apply rounded-3xl bg-white/70 backdrop-blur-none md:bg-white/60 md:backdrop-blur-xl ring-1 ring-black/5 shadow-[0_12px_50px_-24px_rgba(0,0,0,0.45)];
+  }
+
+  .card-surface {
+    @apply glass-surface relative overflow-hidden;
+  }
+
+  .card-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.35),
+      rgba(236, 72, 153, 0.18),
+      rgba(255, 255, 255, 0)
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
   .page-transition-enter {
     animation: page-transition-enter 520ms cubic-bezier(0.4, 0, 0.2, 1) both;
     will-change: opacity, transform;
