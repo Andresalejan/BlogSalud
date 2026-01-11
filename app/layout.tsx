@@ -49,16 +49,14 @@ export default function RootLayout({
           <div className="absolute inset-0 app-vignette" />
         </div>
 
-        <div className="min-h-dvh flex flex-col relative overflow-hidden">
+        <div className="min-h-dvh flex flex-col relative">
           <div className="relative z-20">
             <Navbar contentEnv={contentBranch === "dev" ? "dev" : "prod"} />
           </div>
-          <PageTransition className="relative z-10 flex-1">
+          <PageTransition className="relative z-10 flex-1 bg-[rgb(var(--app-bg))]">
             {children}
           </PageTransition>
-          <div className="relative z-10 bg-[rgb(var(--app-bg))]">
-            <Footer />
-          </div>
+          <Footer />
         </div>
       </body>
     </html>
