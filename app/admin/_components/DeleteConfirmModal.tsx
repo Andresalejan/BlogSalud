@@ -1,3 +1,8 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
+
 type Props = {
   deleteTarget: { slug: string; title: string }
   busy: boolean
@@ -12,7 +17,15 @@ type Props = {
  * mientras el request está en curso.
  */
 export const DeleteConfirmModal = (props: Props) => {
-  return (
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div
         className="absolute inset-0 bg-neutral-900/30"
@@ -42,6 +55,7 @@ export const DeleteConfirmModal = (props: Props) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

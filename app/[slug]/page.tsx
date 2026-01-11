@@ -2,6 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
 import { getArticleData } from "@/lib/server/articles"
+import { slugify } from "@/lib/slug"
 
 // Página de ruta dinámica: /[slug]
 // Ejemplo: /how-to-write-clean-code -> slug = "how-to-write-clean-code"
@@ -29,9 +30,12 @@ const Article = async ({
 
         <div className="flex items-center gap-3">
           {articleData.category ? (
-            <span className="rounded-full bg-violet-100 text-violet-900 px-3 py-1 text-xs">
+            <Link
+              href={`/categoria/${slugify(articleData.category)}`}
+              className="rounded-full bg-violet-100 text-violet-900 px-3 py-1 text-xs hover:bg-violet-200 transition"
+            >
               {articleData.category}
-            </span>
+            </Link>
           ) : null}
           <span className="text-neutral-600">{articleData.date.toString()}</span>
         </div>

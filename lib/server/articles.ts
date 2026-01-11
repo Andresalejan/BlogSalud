@@ -6,6 +6,7 @@ import { remark } from "remark"
 import html from "remark-html"
 
 import type { ArticleItem } from "@/types"
+import { slugify } from "@/lib/slug"
 
 // OJO: este módulo usa `fs` (sistema de archivos), así que debe ejecutarse en el servidor.
 // En Next.js (App Router) eso ocurre cuando lo importas desde páginas/Server Components o route handlers.
@@ -66,6 +67,38 @@ export const getCategorisedArticles = (): Record<string, ArticleItem[]> => {
     ;(acc[key] ??= []).push(article)
     return acc
   }, {})
+}
+
+/**
+ * Devuelve el listado de slugs de categorías disponibles.
+ * Útil para `generateStaticParams`.
+ */
+export const getCategorySlugs = (): string[] => {
+  // Transformamos nombres “humanos” de categorías a slugs de URL.
+  // Importante: el contenido viene de los Markdown, así que lo calculamos en server.
+  const grouped = getCategorisedArticles()
+  return Object.keys(grouped).map((c) => slugify(c || "uncategorized"))
+}
+
+/**
+ * Resuelve una categoría por slug y devuelve el nombre de categoría real + sus artículos.
+ */
+export const getArticlesByCategorySlug = (
+  categorySlug: string,
+): { category: string; articles: ArticleItem[] } | null => {
+  // Resolvemos el slug a la categoría real (con tildes/mayúsculas) para mostrarla
+  // en UI, y devolvemos el listado completo de artículos de esa categoría.
+  const safeSlug = String(categorySlug ?? "").trim()
+  if (!safeSlug) return null
+
+  const grouped = getCategorisedArticles()
+  const category = Object.keys(grouped).find((c) => slugify(c) === safeSlug)
+  if (!category) return null
+
+  return {
+    category,
+    articles: grouped[category] ?? [],
+  }
 }
 
 /**

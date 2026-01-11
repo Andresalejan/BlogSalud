@@ -114,8 +114,7 @@ Requisitos:
 	- `ADMIN_PASSWORD`
 	- `ADMIN_COOKIE_SECRET`
 	- `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO`
-	- (recomendado) `GITHUB_BRANCH_PROD`, `GITHUB_BRANCH_DEV`, `CONTENT_ENV`
-	- (legacy) `GITHUB_BRANCH`
+	- `CONTENT_BRANCH` (por ejemplo `main` o `dev`)
 
 Notas:
 
@@ -164,24 +163,13 @@ Recomendación:
 - `main`: artículos de **PRO**
 - `dev` (o `content-dev`): artículos de **DEV**
 
-Selección automática del branch:
+Selección de branch (simple):
 
-- Si defines `CONTENT_ENV` (manual):
-	- `CONTENT_ENV=prod` → `GITHUB_BRANCH_PROD` (o `GITHUB_BRANCH` o `main`)
-	- `CONTENT_ENV=dev` → `GITHUB_BRANCH_DEV` (o `GITHUB_BRANCH` o `dev`)
-- Si NO defines `CONTENT_ENV`:
-	- En Vercel usa `VERCEL_ENV` (`production` → prod, `preview/development` → dev)
-	- Si no hay Vercel, usa `NODE_ENV` (`production` → prod; cualquier otro → dev)
+- Define `CONTENT_BRANCH` (server-only) con el nombre exacto del branch donde quieres trabajar.
+	- `CONTENT_BRANCH="main"` → el panel `/admin` publica/edita/elimina en `main`.
+	- `CONTENT_BRANCH="dev"` → el panel `/admin` publica/edita/elimina en `dev`.
 
-Variables server-only recomendadas:
-
-- `GITHUB_BRANCH_PROD` (p. ej. `main`)
-- `GITHUB_BRANCH_DEV` (p. ej. `dev` o `content-dev`)
-- `CONTENT_ENV` (opcional en Vercel; útil en local)
-
-Compatibilidad:
-
-- Si solo configuras `GITHUB_BRANCH` (legacy), se usará ese branch tanto en dev como en prod.
+Nota: el badge `DEV` del Navbar se muestra cuando `CONTENT_BRANCH="dev"`.
 
 ### Merge a `main` sin traer artículos ni imágenes (solo merges locales)
 
@@ -192,13 +180,23 @@ Si quieres mergear **código** desde `dev` hacia `main` pero evitar que el merge
 
 Nota importante: `.gitattributes merge=ours` ayuda en algunos casos, pero **no evita borrados** cuando una rama elimina archivos (Git puede aplicar el borrado sin entrar a un merge de contenido).
 
-Para que sea consistente (incluyendo borrados), usa el script incluido:
+Para que sea consistente (incluyendo borrados), usa los scripts incluidos.
 
-```bash
-powershell -ExecutionPolicy Bypass -File scripts/merge-dev-into-main.ps1
+DEV → MAIN (traer código sin traer contenido):
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+& "$PWD\scripts\merge-dev-into-main.ps1"
 ```
 
-Este script hace el merge con `--no-commit` y luego restaura `articles/` y `public/images/` desde `main` antes del commit.
+MAIN → DEV (traer código sin traer contenido):
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+& "$PWD\scripts\merge-main-into-dev-no-articles.ps1"
+```
+
+Estos scripts hacen el merge con `--no-commit` y luego restauran `articles/` y `public/images/` desde la rama destino antes del commit.
 
 Importante:
 
