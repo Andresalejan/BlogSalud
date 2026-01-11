@@ -26,10 +26,20 @@
   .app-bg {
     background-color: rgb(var(--app-bg));
     background-image:
-      radial-gradient(1200px circle at 12% 6%, rgba(var(--app-spot-a) / 0.16), transparent 55%),
-      radial-gradient(1100px circle at 90% 12%, rgba(var(--app-spot-b) / 0.14), transparent 52%),
+      radial-gradient(1200px circle at 12% 6%, rgba(var(--app-spot-a) / 0.06), transparent 55%),
+      radial-gradient(1100px circle at 90% 12%, rgba(var(--app-spot-b) / 0.05), transparent 52%),
       radial-gradient(900px circle at 55% 85%, rgba(var(--app-spot-c) / 0.10), transparent 58%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+      linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 15%, rgba(255, 255, 255, 0.70) 40%, rgba(255, 255, 255, 0) 100%);
+  }
+  
+  @media (min-width: 768px) {
+    .app-bg {
+      background-image:
+        radial-gradient(1200px circle at 12% 6%, rgba(var(--app-spot-a) / 0.16), transparent 55%),
+        radial-gradient(1100px circle at 90% 12%, rgba(var(--app-spot-b) / 0.14), transparent 52%),
+        radial-gradient(900px circle at 55% 85%, rgba(var(--app-spot-c) / 0.10), transparent 58%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+    }
   }
 
   .app-grid {
@@ -48,8 +58,15 @@
   }
 
   .app-vignette {
-    background: radial-gradient(1200px circle at 50% 10%, transparent 0%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.24) 100%);
-    opacity: 0.55;
+    background: radial-gradient(1200px circle at 50% 10%, transparent 0%, rgba(0, 0, 0, 0.08) 78%, rgba(0, 0, 0, 0.12) 100%);
+    opacity: 0.35;
+  }
+  
+  @media (min-width: 768px) {
+    .app-vignette {
+      background: radial-gradient(1200px circle at 50% 10%, transparent 0%, rgba(0, 0, 0, 0.16) 78%, rgba(0, 0, 0, 0.24) 100%);
+      opacity: 0.55;
+    }
   }
 
   .glass-surface {
