@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="h-full">
       <body
-        className={`${lora.variable} ${inter.variable} min-h-dvh text-slate-900 antialiased`}
+        className={`${lora.variable} ${inter.variable} min-h-dvh text-slate-900 antialiased overflow-x-hidden`}
       >
         {/* Modern background system: gradient + grid + subtle noise */}
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
@@ -49,14 +49,14 @@ export default function RootLayout({
           <div className="absolute inset-0 app-vignette" />
         </div>
 
-        <div className="min-h-dvh flex flex-col relative">
+        <div className="min-h-dvh flex flex-col relative overflow-hidden">
           <div className="relative z-20">
             <Navbar contentEnv={contentBranch === "dev" ? "dev" : "prod"} />
           </div>
           <PageTransition className="relative z-10 flex-1">
             {children}
           </PageTransition>
-          <div className="relative z-10">
+          <div className="relative z-10 bg-[rgb(var(--app-bg))]">
             <Footer />
           </div>
         </div>
