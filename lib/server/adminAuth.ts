@@ -70,7 +70,10 @@ export const verifyAdminSession = (secret: string, token: string | undefined) =>
   const parts = token.split(".")
   if (parts.length !== 2) return { ok: false as const }
 
-  const [payloadB64, sig] = parts
+  const payloadB64 = parts[0]
+  const sig = parts[1]
+  if (!payloadB64 || !sig) return { ok: false as const }
+  
   const expectedSig = hmac(secret, payloadB64)
 
   // Importante: comparación timing-safe para evitar leaks por tiempo.

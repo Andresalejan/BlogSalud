@@ -31,13 +31,17 @@ const HomePage = () => {
         <section id="articles" className="md:grid md:grid-cols-2 flex flex-col gap-10 scroll-mt-24">
           {/* Pintamos una "sección" por categoría, y dentro enlaces a cada artículo */}
           {articles !== null &&
-            sortedCategories.map((category) => (
-              <ArticleItemList
-                category={category}
-                articles={articles[category]}
-                key={category}
-              />
-            ))}
+            sortedCategories.map((category) => {
+              const categoryArticles = articles[category]
+              if (!categoryArticles) return null
+              return (
+                <ArticleItemList
+                  category={category}
+                  articles={categoryArticles}
+                  key={category}
+                />
+              )
+            })}
         </section>
       </section>
     </section>

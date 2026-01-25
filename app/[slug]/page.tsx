@@ -1,9 +1,55 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
-import { getArticleData } from "@/lib/server/articles"
+import type { Metadata } from "next"
+import { getArticleData, getSortedArticles } from "@/lib/server/articles"
 import { slugify } from "@/lib/slug"
 import BackButton from "@/components/BackButton"
+
+// Static generation: pre-generate all article pages at build time
+export const generateStaticParams = async () => {
+  const articles = getSortedArticles()
+  return articles.map((article) => ({
+    slug: article.id,
+  }))
+}
+
+// Dynamic metadata for SEO and social sharing
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> => {
+  const { slug } = await params
+  const articleData = await getArticleData(slug)
+
+  if (!articleData) {
+    return {
+      title: "Artículo no encontrado",
+      description: "El artículo que buscas no existe.",
+    }
+  }
+
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
+
+  return {
+    title: `${articleData.title} | ${siteName}`,
+    description: `${articleData.title} - Artículo sobre ${articleData.category}`,
+    openGraph: {
+      title: articleData.title,
+      description: `Artículo sobre ${articleData.category}`,
+      type: "article",
+      publishedTime: articleData.date,
+      authors: [siteName],
+      tags: [articleData.category],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: articleData.title,
+      description: `Artículo sobre ${articleData.category}`,
+    },
+  }
+}
 
 // Página de ruta dinámica: /[slug]
 // Ejemplo: /how-to-write-clean-code -> slug = "how-to-write-clean-code"

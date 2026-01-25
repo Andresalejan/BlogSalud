@@ -17,9 +17,6 @@ type NavbarProps = {
 
 const Navbar = ({ contentEnv }: NavbarProps) => {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
-  const siteDescription =
-    process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
-    "Artículos de salud femenina."
 
   // Logo del título (archivo en /public). Nota: el nombre incluye espacios, por eso va URL-encoded.
   const siteLogoSrc = "/ginesavia%20web%20blanco-01.png"
@@ -32,7 +29,7 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
   const [articleIndex, setArticleIndex] = useState<ArticleIndexItem[]>([])
 
   // Flags para UX: placeholder “Cargando…” y error amigable.
-  const [isLoadingIndex, setIsLoadingIndex] = useState(false)
+  const [, setIsLoadingIndex] = useState(false)
   const [indexError, setIndexError] = useState<string | null>(null)
 
   // Importante: en modo dev, React puede ejecutar efectos más de una vez

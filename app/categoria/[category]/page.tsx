@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
+import type { Metadata } from "next"
 
 import BackButton from "@/components/BackButton"
 
@@ -9,6 +10,43 @@ import {
   getArticlesByCategorySlug,
   getCategorySlugs,
 } from "@/lib/server/articles"
+
+// Dynamic metadata for SEO and social sharing
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ category: string }>
+}): Promise<Metadata> => {
+  const { category } = await params
+
+  if (!isValidSlug(category)) {
+    return {
+      title: "Categoría no encontrada",
+      description: "La categoría que buscas no existe.",
+    }
+  }
+
+  const data = getArticlesByCategorySlug(category)
+
+  if (!data) {
+    return {
+      title: "Categoría no encontrada",
+      description: "La categoría que buscas no existe.",
+    }
+  }
+
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
+
+  return {
+    title: `${data.category} | ${siteName}`,
+    description: `Artículos sobre ${data.category}. Explora todos los artículos publicados en este tema.`,
+    openGraph: {
+      title: `${data.category} | ${siteName}`,
+      description: `Artículos sobre ${data.category}`,
+      type: "website",
+    },
+  }
+}
 
 const CategoryPage = async ({
   params,

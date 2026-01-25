@@ -1,9 +1,11 @@
 import fs from "fs"
 import matter from "gray-matter"
 import path from "path"
-import moment from "moment"
+import { parse, isValid } from "date-fns"
 import { remark } from "remark"
 import html from "remark-html"
+import rehypeSanitize from "rehype-sanitize"
+import { rehype } from "rehype"
 
 import type { ArticleItem } from "@/types"
 import { slugify } from "@/lib/slug"
@@ -47,9 +49,12 @@ export const getSortedArticles = (): ArticleItem[] => {
   return allArticlesData.sort((a, b) => {
     // Ordena por fecha descendente (más nuevo primero).
     // Importante: aquí se asume formato "DD-MM-YYYY".
-    const format = "DD-MM-YYYY"
-    const aTime = moment(a.date, format).valueOf()
-    const bTime = moment(b.date, format).valueOf()
+    const format = "dd-MM-yyyy"
+    const aDate = parse(a.date, format, new Date())
+    const bDate = parse(b.date, format, new Date())
+    // Si alguna fecha es inválida, la movemos al final.
+    const aTime = isValid(aDate) ? aDate.getTime() : 0
+    const bTime = isValid(bDate) ? bDate.getTime() : 0
     return bTime - aTime
   })
 }
@@ -104,8 +109,8 @@ export const getArticlesByCategorySlug = (
 /**
  * Carga un artículo por slug y devuelve sus datos + HTML renderizado.
  *
- * El HTML se genera con `remark` + `remark-html`. El render final lo hace
- * la página del artículo.
+ * El HTML se genera con `remark` + `remark-html` y se sanitiza con `rehype-sanitize`
+ * para prevenir ataques XSS. El render final lo hace la página del artículo.
  */
 export const getArticleData = async (id: string): Promise<ArticleData | null> => {
   // Carga el Markdown de un artículo concreto a partir del slug.
@@ -125,9 +130,12 @@ export const getArticleData = async (id: string): Promise<ArticleData | null> =>
 
   const matterResult = matter(fileContents)
 
-  // Convierte Markdown -> HTML. Luego ese HTML se renderiza en la página del artículo.
+  // Convierte Markdown -> HTML y sanitiza el resultado para prevenir XSS.
   const processedContent = await remark().use(html).process(matterResult.content)
-  const contentHtml = processedContent.toString()
+  const sanitizedContent = await rehype()
+    .use(rehypeSanitize)
+    .process(processedContent.toString())
+  const contentHtml = sanitizedContent.toString()
 
   return {
     id,

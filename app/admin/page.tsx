@@ -33,13 +33,7 @@ import {
  * - La fecha se fija en el servidor al publicar/actualizar.
  * - Las imágenes pegadas se mantienen en memoria hasta confirmar (para hacer commit atómico).
  */
-const todayDDMMYYYY = () => {
-  const d = new Date()
-  const dd = String(d.getDate()).padStart(2, "0")
-  const mm = String(d.getMonth() + 1).padStart(2, "0")
-  const yyyy = String(d.getFullYear())
-  return `${dd}-${mm}-${yyyy}`
-}
+
 
 // Helpers de edición Markdown / imágenes viven en `./_utils/markdownEditor`.
 // Nota: este archivo solo “conecta” esas utilidades con el estado del formulario.

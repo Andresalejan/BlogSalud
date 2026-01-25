@@ -26,11 +26,14 @@ export const AdminArticlesCard = (props: Props) => {
         <div className="space-y-6">
           {Object.keys(props.groupedArticles)
             .sort((a, b) => a.localeCompare(b, "es"))
-            .map((cat) => (
+            .map((cat) => {
+              const articles = props.groupedArticles[cat]
+              if (!articles) return null
+              return (
               <div key={cat}>
                 <h3 className="text-sm font-semibold text-neutral-900 mb-2">{cat}</h3>
                 <div className="divide-y divide-neutral-200 rounded-xl border border-neutral-200">
-                  {props.groupedArticles[cat]
+                  {articles
                     .slice()
                     .sort((a, b) => a.title.localeCompare(b.title, "es"))
                     .map((a) => (
@@ -68,7 +71,8 @@ export const AdminArticlesCard = (props: Props) => {
                     ))}
                 </div>
               </div>
-            ))}
+              )
+            })}
         </div>
       )}
     </div>
