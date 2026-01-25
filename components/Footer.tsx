@@ -6,7 +6,7 @@ const Footer = () => {
           GINESAVIA
         </p>
         <p className="font-poppins text-sm text-neutral-600">
-          Contenido informativo. No sustituye una consulta presencial!.
+          Contenido informativo. No sustituye una consulta presencial.
         </p>
         <p className="font-poppins text-xs text-neutral-500">
           © {new Date().getFullYear()} · Todos los derechos reservados.
