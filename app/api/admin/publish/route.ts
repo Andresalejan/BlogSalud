@@ -137,7 +137,7 @@ export async function POST(req: Request) {
   const existingSha = await getExistingFileSha(cfg, path)
   if (existingSha) {
     return NextResponse.json(
-      { error: "A file with this slug already exists" },
+      { error: "Ya existe una publicación con el mismo título" },
       { status: 409 }
     )
   }

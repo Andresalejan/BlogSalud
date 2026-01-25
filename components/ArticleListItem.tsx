@@ -18,7 +18,7 @@ const ArticleItemList = ({ category, articles }: Props) => {
   // La página de categoría muestra el listado completo.
   const previewArticles = articles.slice(0, 5)
   return (
-    <div className="group flex flex-col gap-4 rounded-2xl border border-violet-100 bg-white/70 p-6 md:p-7 shadow-sm">
+    <div className="group flex flex-col gap-4 rounded-2xl border border-violet-100 bg-white/70 p-6 md:p-7 shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1">
       <div className="flex items-center gap-3">
         <CategoryIcon category={category} />
         <h2 className="font-cormorantGaramond text-3xl md:text-4xl leading-tight text-violet-900">

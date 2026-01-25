@@ -125,6 +125,8 @@ const Navbar = ({ contentEnv }: NavbarProps) => {
                 width={720}
                 height={180}
                 priority
+                fetchPriority="high"
+                loading="eager"
                 // Usamos tamaños que existen en Tailwind y una base suficientemente grande.
                 // Con zoom, el viewport efectivo cambia y puede activar/desactivar breakpoints.
                 // Esta escala evita saltos donde el logo queda demasiado pequeño.

@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"
 
+import BackButton from "@/components/BackButton"
+
 export default function NotFound() {
   return (
     <section className="mx-auto w-11/12 md:w-1/2 py-12 flex flex-col gap-6">
@@ -23,13 +25,10 @@ export default function NotFound() {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-xl bg-neutral-900 text-white px-4 py-2 text-sm font-poppins font-semibold"
-          >
+          <BackButton className="inline-flex items-center gap-2 rounded-xl bg-neutral-900 text-white px-4 py-2 text-sm font-poppins font-semibold">
             <ArrowLeftIcon width={18} />
-            Volver al inicio
-          </Link>
+            Volver
+          </BackButton>
 
           <Link
             href="/sobre-nosotros"

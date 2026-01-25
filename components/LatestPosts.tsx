@@ -27,7 +27,7 @@ export default function LatestPosts() {
           return (
             <article
               key={article.id}
-              className="group rounded-2xl border border-violet-100 bg-white/70 p-6 md:p-7 shadow-sm"
+              className="group rounded-2xl border border-violet-100 bg-white/70 p-6 md:p-7 shadow-sm transition-transform duration-200 ease-out hover:-translate-y-1"
             >
               <div className="flex items-center justify-between gap-4">
                 {/* Chip de categoría (link) con icono */}
