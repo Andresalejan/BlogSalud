@@ -6,7 +6,7 @@ date: "28-01-2026"
 
 # Virus del Papiloma Humano (VPH): lo que necesitas saber
 
-El virus del papiloma humano (VPH) es una de las infecciones de transmisión sexual más comunes en el mundo. La mayoría de las personas sexualmente activas se infectarán con VPH en algún momento de su vida, muchas veces sin saberlo. :contentReference[oaicite:0]{index=0}
+El virus del papiloma humano (VPH) es una de las infecciones de transmisión sexual más comunes en el mundo. La mayoría de las personas sexualmente activas se infectarán con VPH en algún momento de su vida, muchas veces sin saberlo.
 
 ## ¿Qué es el VPH?
 
