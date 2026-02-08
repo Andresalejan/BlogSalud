@@ -21,7 +21,7 @@ const inter = Inter({
   weight: ["400", "600"],
 })
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "BlogSalud"
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "GINESAVIA"
 const siteDescription =
   process.env.NEXT_PUBLIC_SITE_DESCRIPTION ??
   "Artículos de salud."
@@ -29,8 +29,12 @@ const siteDescription =
 const contentBranch = process.env.CONTENT_BRANCH ?? "main"
 
 export const metadata: Metadata = {
-  title: `${siteName} · BlogSalud`,
+  title: `${siteName}`,
   description: siteDescription,
+  icons: {
+    icon: "/icono-ginesavia.png",
+    apple: "/icono-ginesavia.png",
+  },
   verification: {
     google: "CIeXAkB6egtU03rOtRxUgfiVJVklF-wnH5sZLX90s1U",
   },
