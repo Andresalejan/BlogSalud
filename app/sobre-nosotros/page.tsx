@@ -35,7 +35,7 @@ export default function SobreNosotrosPage() {
         <div className="flex flex-col gap-6 md:flex-row md:items-center">
           <div className="mx-auto w-36 md:mx-0 md:w-40">
             <Image
-              src="/doctor-profile.jpg"
+              src="/FotoMedico.jpeg"
               alt="Foto del Dr. Jesús Sánchez"
               width={320}
               height={320}
@@ -53,7 +53,7 @@ export default function SobreNosotrosPage() {
               </p>
             </div>
             <div className="flex items-center gap-4 mt-2">
-              <a
+              {/* <a
                 href="https://www.linkedin.com/in/usuario"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -61,7 +61,7 @@ export default function SobreNosotrosPage() {
                 className="text-neutral-500 hover:text-violet-700 transition-colors"
               >
                 <Linkedin className="h-5 w-5" strokeWidth={1.5} />
-              </a>
+              </a> */}
 
               <a
                 href="https://www.instagram.com/ginesavia"

@@ -5,6 +5,7 @@ import "./globals.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import PageTransition from "./_components/PageTransition"
+import Script from "next/script"
 // Tipografías del sitio:
 // - Texto/cuerpo: Inter (muy legible en pantallas)
 // - Títulos: Lora (serif editorial, buena lectura)
@@ -30,6 +31,9 @@ const contentBranch = process.env.CONTENT_BRANCH ?? "main"
 export const metadata: Metadata = {
   title: `${siteName} · BlogSalud`,
   description: siteDescription,
+  verification: {
+    google: "CIeXAkB6egtU03rOtRxUgfiVJVklF-wnH5sZLX90s1U",
+  },
 }
 
 export default function RootLayout({
@@ -39,6 +43,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className="bg-violet-50">
+       {/* Google Analytics */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-V1355QL85W"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-V1355QL85W');
+        `}
+      </Script>
       <body className={`${lora.variable} ${inter.variable} bg-[#faf7fd] text-neutral-900`}>
 
         <div className="min-h-dvh flex flex-col relative isolate">
